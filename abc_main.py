@@ -383,6 +383,7 @@ while running:
         boss_speed_x = 0
         boss_hp = BOSS_HP
         boss_3_attack = False
+        level = 1
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

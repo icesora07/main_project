@@ -602,10 +602,10 @@ while running:
 
 
         score += (level + 1) * 30
-        score_font = font_score.render(f"score {score}", True, (170, 70, 90))
+        score_font = font_score.render(f"score {score}", True, (130, 20, 40))
         screen.blit(score_font, (20, HEIGHT - 15 - score_font.get_height()))
 
-        level_font = font_level.render(f"level {level}", True, (170, 80, 170))
+        level_font = font_level.render(f"level {level}", True, (170, 20, 10))
         screen.blit(level_font, (20, HEIGHT - 60 - score_font.get_height()))
 
         for attack in attacks:

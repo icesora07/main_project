@@ -56,6 +56,11 @@ magnet = False
 score = 0
 max_score = 0
 
+main_RGB_CK = [False, False, False]
+main_RGB = [255, 255, 255]
+
+boss_hp_bar_RGB = [0, 0, 0]
+
 score_item_hitbox = 16
 
 player_hitbox = 10
@@ -119,10 +124,11 @@ img_world = pygame.image.load('world.png')
 player_anim = 0
 anim_time = 0
 
-font_title = pygame.font.SysFont("Consolas", 60, bold=True)
-font_title_outline = pygame.font.SysFont("Consolas", 65, bold=True)
-font_score = pygame.font.SysFont("Consolas", 40, bold=True)
-font_level = pygame.font.SysFont("Consolas", 40, bold=True)
+font_title = pygame.font.SysFont('Comic Sans MS', 50, bold=True)
+font_title_outline = pygame.font.SysFont('Comic Sans MS', 55, bold=True)
+font_main = pygame.font.SysFont('Comic Sans MS', 70, bold=True)
+font_score = pygame.font.SysFont('Comic Sans MS', 40, bold=True)
+font_level = pygame.font.SysFont('Comic Sans MS', 40, bold=True)
 font_desc = pygame.font.SysFont("malgungothic", 20, bold=True)
 
 class Monster():
@@ -336,7 +342,7 @@ while running:
     if state == MAIN:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if ing == False:
-            screen.fill((0, 0, 0))
+            screen.fill((20, 0, 10))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -350,26 +356,38 @@ while running:
 
         if max_score < score:
             max_score = score
-        pygame.draw.rect(screen, (20, 150, 240), (155, 400, 190, 60))
-        if 155 < mouse_x < 345 and 400 < mouse_y < 460:            
-            pygame.draw.rect(screen, (20, 70, 120), (155, 400, 190, 60))
-        pygame.draw.rect(screen, (250, 250, 250), (155, 400, 190, 60), 1)
-        pygame.draw.rect(screen, (250, 250, 250), (145, 390, 210, 80), 1)
-        main_text_1 = font_score.render("|hoopoe fly|", True, (250, 250, 250))
-        main_text_2 = font_score.render("|with lapis lazuli|", True, (250, 250, 250))
-        title = font_title.render("START", True, (30, 10, 50))
-        title_outline = font_title_outline.render("START", True, (20, 90, 220))
-        score_text_1 = font_score.render("HIGH SCORE", True, (250, 180, 10))
-        score_text_2 = font_score.render(f"[{max_score}]", True, (250, 180, 10))
-        screen.blit(title, (WIDTH//2 - title.get_width()//2, HEIGHT//2))
-        screen.blit(title_outline, (WIDTH//2 - title_outline.get_width()//2, HEIGHT//2))
-        screen.blit(score_text_1, (WIDTH//2 - score_text_1.get_width()//2, HEIGHT//2 + 100))
-        screen.blit(score_text_2, (WIDTH//2 - score_text_2.get_width()//2, HEIGHT//2 + 150))
+
+        for i in range(3):
+            if main_RGB_CK[i] == True:
+                main_RGB[i] += 1 + i
+            else:
+                main_RGB[i] -= 3 - i
+            if main_RGB[i] >= 255:
+                main_RGB[i] = 255
+                main_RGB_CK[i] = False
+            elif main_RGB[i] <= 50:
+                main_RGB[i] = 50
+                main_RGB_CK[i] = True
+
+        title = font_title.render("START", True, (60, 40, 100))
+        main_text_1 = font_main.render("hoopoe fly", True, (main_RGB))
+        score_text_1 = font_score.render("HIGH SCORE", True, (255, 200, 30))
+        score_text_2 = font_score.render(f"<{int(max_score)}>", True, (255, 230, 100))
+
+        screen.blit(title, (WIDTH//2 - title.get_width()//2, HEIGHT//2 - 10))
         screen.blit(main_text_1, (WIDTH//2 - main_text_1.get_width()//2, HEIGHT//2 - 150))
-        screen.blit(main_text_2, (WIDTH//2 - main_text_2.get_width()//2, HEIGHT//2 - 100))
+        if score > 0:
+            screen.blit(score_text_1, (WIDTH//2 - score_text_1.get_width()//2, HEIGHT//2 + 100))
+            screen.blit(score_text_2, (WIDTH//2 - score_text_2.get_width()//2, HEIGHT//2 + 150))
+        if 155 < mouse_x < 345 and 400 < mouse_y < 460:
+            title_outline = font_title_outline.render("START", True, (10, 60, 170))
+            screen.blit(title_outline, (WIDTH//2 - title_outline.get_width()//2, HEIGHT//2 - 12))
+        else:
+            title_outline = font_title_outline.render("START", True, (50, 150, 250))
+            screen.blit(title_outline, (WIDTH//2 - title_outline.get_width()//2, HEIGHT//2 - 10))
 
     elif state == GAME_READY:
-        screen.fill((0, 0, 0))
+        screen.fill((20, 0, 20))
         player_hp = 1
         player_damage = 10
         score = 0
@@ -385,6 +403,18 @@ while running:
         boss_3_attack = False
         level = 1
 
+        for i in range(3):
+            if main_RGB_CK[i] == True:
+                main_RGB[i] += 1 + i
+            else:
+                main_RGB[i] -= 3 - i
+            if main_RGB[i] >= 255:
+                main_RGB[i] = 255
+                main_RGB_CK[i] = False
+            elif main_RGB[i] <= 50:
+                main_RGB[i] = 50
+                main_RGB_CK[i] = True
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -398,6 +428,8 @@ while running:
                     if item_choice == 3:
                         item_choice = 0
 
+        pygame.draw.rect(screen, (30, 30, 70), [20, 20, 460, 470])
+        pygame.draw.rect(screen, (0, 150, 250), [20, 20, 460, 470], 3)
         for i in range(3):
             pygame.draw.rect(screen, (50, 50, 50), [50 + i * 150, 650, 100, 100])
             pygame.draw.rect(screen, (100, 100, 100), [50 + i * 150, 650, 100, 100], 2)
@@ -425,7 +457,7 @@ while running:
         k_text = font_score.render("<<  >>", True, (250, 250, 250))
         screen.blit(k_text, (WIDTH//2 - k_text.get_width()//2, HEIGHT//2 + 170))
 
-        et_text = font_score.render("[ENTER]", True, (250, 250, 250))
+        et_text = font_score.render("[ENTER]", True, (main_RGB))
         screen.blit(et_text, (WIDTH//2 - et_text.get_width()//2, HEIGHT//2 + 100))
         
         text_y = 150
@@ -518,11 +550,15 @@ while running:
                     boss_1_attack_num = 1
                 elif boss_1_attack_num == 1:
                     boss_1_attack_num = 0
+                    boss_follow_attacks.append(Boss_Follow_Attack(4, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_boss_attack))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         world_y, world_y_ = world_draw(player_x, world_y, world_y_, player_hitbox, 2 + monster_speed * (0.01 * level), mouse_x)
 
         if boss_fight == True and boss_hp > 0:
+            boss_hp_bar = boss_hp / (BOSS_HP / (WIDTH - 30))
+            boss_hp_bar_s = BOSS_HP / (BOSS_HP / (WIDTH - 30))
+            
             if boss_level == 0:
                 screen.blit(img_boss_mb, (boss_x - 64, boss_y - 64))
                 screen.blit(img_boss, (boss_x - 64, boss_y - 70))
@@ -534,10 +570,11 @@ while running:
                     boss_level = 1
 
             elif boss_level == 1:
+                boss_hp_bar_RGB = [30, 155, 225]
                 screen.blit(img_boss_attack_mb, (boss_x - 48 - 75, BOSS_Y - 48 - 50))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 + 75, BOSS_Y - 48 - 50))
-                screen.blit(img_boss_attack_mb, (boss_x - 48 - 255, BOSS_Y - 48 - 50))
-                screen.blit(img_boss_attack_mb, (boss_x - 48 + 255, BOSS_Y - 48 - 50))
+                screen.blit(img_boss_attack_mb, (boss_x - 48 - 225, BOSS_Y - 48 - 50))
+                screen.blit(img_boss_attack_mb, (boss_x - 48 + 225, BOSS_Y - 48 - 50))
 
                 screen.blit(img_boss_attack_mb, (boss_x - 48, BOSS_Y - 48))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 - 150, BOSS_Y - 48))
@@ -548,12 +585,22 @@ while running:
                     sp_rule = 0
 
             elif boss_level == 2:
+                for i in range(3):
+                    if boss_hp_bar_RGB[i] < 20 and i == 0 or boss_hp_bar_RGB[i] < 255 and i == 1 or boss_hp_bar_RGB[i] < 55 and i == 2:
+                        boss_hp_bar_RGB[i] += 1
+                    elif boss_hp_bar_RGB[i] > 100 and i == 0 or boss_hp_bar_RGB[i] > 255 and i == 1 or boss_hp_bar_RGB[i] > 55 and i == 2:
+                        boss_hp_bar_RGB[i] -= 1
                 if BOSS_HP * 2 // 4 >= boss_hp:
                     boss_3_attack = True
                     boss_3_attack_num = 0
                     boss_level = 3
 
             elif boss_level == 3:
+                for i in range(3):
+                    if boss_hp_bar_RGB[i] < 255 and i == 0 or boss_hp_bar_RGB[i] < 255 and i == 1 or boss_hp_bar_RGB[i] < 5 and i == 2:
+                        boss_hp_bar_RGB[i] += 1
+                    elif boss_hp_bar_RGB[i] > 255 and i == 0 or boss_hp_bar_RGB[i] > 255 and i == 1 or boss_hp_bar_RGB[i] > 5 and i == 2:
+                        boss_hp_bar_RGB[i] -= 1
                 screen.blit(img_boss_attack_mb, (boss_x - 48 + 150, BOSS_Y - 48))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 - 150, BOSS_Y - 48))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 + 50, BOSS_Y - 48 - 100))
@@ -562,10 +609,18 @@ while running:
                     boss_level = 4
             
             elif boss_level == 4:
+                for i in range(3):
+                    if boss_hp_bar_RGB[i] < 200 and i == 0 or boss_hp_bar_RGB[i] < 55 and i == 1 or boss_hp_bar_RGB[i] < 25 and i == 2:
+                        boss_hp_bar_RGB[i] += 1
+                    elif boss_hp_bar_RGB[i] > 200 and i == 0 or boss_hp_bar_RGB[i] > 55 and i == 1 or boss_hp_bar_RGB[i] > 25 and i == 2:
+                        boss_hp_bar_RGB[i] -= 1
                 screen.blit(img_boss_attack_mb, (boss_x - 48 - 150, BOSS_Y - 48))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 + 150, BOSS_Y - 48))
 
             if boss_level > 0:
+                pygame.draw.rect(screen, (25, 25, 25), [15, 15, boss_hp_bar_s, 20])
+                pygame.draw.rect(screen, boss_hp_bar_RGB, [15, 15, boss_hp_bar, 20])
+                pygame.draw.rect(screen, (45, 15, 5), [15, 15, WIDTH - 30, 20], 3)
                 for boss_attack in boss_attacks:
                     if crash(player_x, player_y, player_hitbox, boss_attack.x, boss_attack.y, boss_attack.hitbox) == True and invincible == False:
                         player_hp -= 1
@@ -594,20 +649,6 @@ while running:
                         removed_attacks.add(attack)
                         boss_hp -= player_damage
 
-            boss_hp_bar = boss_hp / (BOSS_HP / (WIDTH - 30))
-            boss_hp_bar_s = BOSS_HP / (BOSS_HP / (WIDTH - 30))
-            pygame.draw.rect(screen, (25, 25, 25), [15, 15, boss_hp_bar_s, 20])
-            pygame.draw.rect(screen, (200, 55, 25), [15, 15, boss_hp_bar, 20])
-            pygame.draw.rect(screen, (55, 5, 5), [15, 15, WIDTH - 30, 20], 3)
-
-
-        score += (level + 1) * 30
-        score_font = font_score.render(f"score {score}", True, (130, 20, 40))
-        screen.blit(score_font, (20, HEIGHT - 15 - score_font.get_height()))
-
-        level_font = font_level.render(f"level {level}", True, (170, 20, 10))
-        screen.blit(level_font, (20, HEIGHT - 60 - score_font.get_height()))
-
         for attack in attacks:
             attack.move()
             attack.draw(screen)
@@ -627,7 +668,7 @@ while running:
             s_items = []
             ing = False
             level = 1
-            time.sleep(0.5)
+            time.sleep(1)
             state = MAIN
 
         for s_item in s_items:
@@ -674,9 +715,9 @@ while running:
                                 
             if crash(player_x, player_y, player_hitbox, s_item.x, s_item.y, 40) == True:
                 if s_item.rand == 1:
-                    score += 30000
+                    score += 30000 * (1 + level * 0.3)
                 else:
-                    score += 10000
+                    score += 10000 * (1 + level * 0.3)
                 removed_s_items.add(s_item)
             s_item.move()
             s_item.draw()
@@ -687,9 +728,16 @@ while running:
                     if monster.hp_down(player_damage) <= 0:
                         if boss_fight == False:
                             s_items.append(S_item(score_item_hitbox, monster.x, monster.y, img_score_item, img_e_score_item))
-                            score += 9000
+                            score += 9000 * (1 + level * 0.1)
                         removed_monsters.add(monster)
                     removed_attacks.add(attack)
+
+        score += (level + 1) * 30
+        score_font = font_score.render(f"score {int(score)}", True, (130, 20, 40))
+        screen.blit(score_font, (20, HEIGHT - 15 - score_font.get_height()))
+
+        level_font = font_level.render(f"level {level}", True, (170, 20, 10))
+        screen.blit(level_font, (20, HEIGHT - 60 - score_font.get_height()))
 
         attacks = [a for a in attacks if a not in removed_attacks]
         monsters = [m for m in monsters if m not in removed_monsters]
@@ -707,6 +755,7 @@ while running:
                 ing = False
                 boss_level = 0
                 boss_fight = False
+                time.sleep(1)
                 state = GAME_CLEAR
 
         # 임시 (보스 테스트 용도)

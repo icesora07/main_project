@@ -34,7 +34,7 @@ MONSTER_TIME = pygame.USEREVENT + 2
 pygame.time.set_timer(MONSTER_TIME, 2000)
 
 BOSS_F_MONSTER_TIME = pygame.USEREVENT + 3
-pygame.time.set_timer(BOSS_F_MONSTER_TIME, 120)
+pygame.time.set_timer(BOSS_F_MONSTER_TIME, 230)
 
 BOSS_F_1_ATTACK_TIME = pygame.USEREVENT + 4
 pygame.time.set_timer(BOSS_F_1_ATTACK_TIME, 700)
@@ -94,6 +94,7 @@ level_check = 0
 world_y = -800
 world_y_ = -2400
 
+img_hoopoe = pygame.image.load('hoopoe.png')
 img_boss = pygame.image.load('lala_boss.png')
 img_boss_mb = pygame.image.load('boss_mb.png')
 img_boss_attack_mb = pygame.image.load('boss_attack_mb.png')
@@ -343,11 +344,12 @@ while running:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if ing == False:
             screen.fill((10, 0, 5))
+            screen.blit(img_hoopoe, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if 155 < mouse_x < 345 and 400 < mouse_y < 460:
+                if 155 < mouse_x < 345 and 400 + 230 < mouse_y < 460 + 230:
                     if ing == False:
                         item_choice = 0
                         state = GAME_READY
@@ -374,20 +376,25 @@ while running:
         score_text_1 = font_score.render("HIGH SCORE", True, (255, 200, 30))
         score_text_2 = font_score.render(f"<{int(max_score)}>", True, (255, 230, 100))
 
-        screen.blit(title, (WIDTH//2 - title.get_width()//2, HEIGHT//2 - 10))
-        screen.blit(main_text_1, (WIDTH//2 - main_text_1.get_width()//2, HEIGHT//2 - 150))
+        screen.blit(title, (WIDTH//2 - title.get_width()//2, HEIGHT//2 - 10 + 230))
+        screen.blit(main_text_1, (WIDTH//2 - main_text_1.get_width()//2, HEIGHT//2 - 370))
         if score > 0:
-            screen.blit(score_text_1, (WIDTH//2 - score_text_1.get_width()//2, HEIGHT//2 + 100))
-            screen.blit(score_text_2, (WIDTH//2 - score_text_2.get_width()//2, HEIGHT//2 + 150))
-        if 155 < mouse_x < 345 and 400 < mouse_y < 460:
+            screen.blit(score_text_1, (WIDTH//2 - score_text_1.get_width()//2, HEIGHT//2 + 100 - 30))
+            screen.blit(score_text_2, (WIDTH//2 - score_text_2.get_width()//2, HEIGHT//2 + 150 - 30))
+        if 155 < mouse_x < 345 and 400 + 230 < mouse_y < 460 + 230:
             title_outline = font_title_outline.render("START", True, (10, 60, 170))
-            screen.blit(title_outline, (WIDTH//2 - title_outline.get_width()//2, HEIGHT//2 - 12))
+            screen.blit(title_outline, (WIDTH//2 - title_outline.get_width()//2, HEIGHT//2 - 12 + 230))
         else:
             title_outline = font_title_outline.render("START", True, (50, 150, 250))
-            screen.blit(title_outline, (WIDTH//2 - title_outline.get_width()//2, HEIGHT//2 - 10))
+            screen.blit(title_outline, (WIDTH//2 - title_outline.get_width()//2, HEIGHT//2 - 10 + 230))
 
     elif state == GAME_READY:
         screen.fill((20, 0, 20))
+        attacks = []
+        s_items = []
+        monsters = []
+        boss_attacks = []
+        boss_follow_attacks = []
         player_hp = 1
         player_damage = 10
         score = 0
@@ -454,7 +461,7 @@ while running:
         screen.blit(font_desc.render(name, True, (255, 215, 0)), (40, 50))
         screen.blit(font_desc.render(effect, True, (100, 200, 255)), (40, 95))
 
-        k_text = font_score.render("<<  >>", True, (250, 250, 250))
+        k_text = font_score.render("<< key >>", True, (250, 250, 250))
         screen.blit(k_text, (WIDTH//2 - k_text.get_width()//2, HEIGHT//2 + 170))
 
         et_text = font_score.render("[ENTER]", True, (main_RGB))
@@ -496,23 +503,30 @@ while running:
                     monsters.append(Monster(monster_speed, monster_hp, level, monster_hitbox, monster_x, monster_y, img_monster_1))
                     monster_x += 100
             if event.type == BOSS_F_1_ATTACK_TIME and boss_level == 1:
-                if boss_1_attack_num == 0:
-                    boss_1_attack_num = 1
+                if boss_attack_num == 0:
+                    boss_attack_num = 1
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x - 75, BOSS_Y - 50, img_boss_attack))
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x + 75, BOSS_Y - 50, img_boss_attack))
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x - 225, BOSS_Y - 50, img_boss_attack))
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x + 225, BOSS_Y - 50, img_boss_attack))
-                elif boss_1_attack_num == 1:
-                    boss_1_attack_num = 0
+                elif boss_attack_num == 1:
+                    boss_attack_num = 0
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x, BOSS_Y, img_boss_attack))
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x - 150, BOSS_Y, img_boss_attack))
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x + 150, BOSS_Y, img_boss_attack))
                     boss_follow_attacks.append(Boss_Follow_Attack(2, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_boss_attack))
             
             if event.type == BOSS_F_3_TIME and boss_level == 2:
-                for i in range(4):
-                    for k in range(4):
-                        boss_attacks.append(Boss_Attack(1.5 - i, 4 - k, boss_attack_hitbox, boss_x, boss_y, img_boss_attack))
+                if boss_attack_num == 0:
+                    boss_attack_num = 1
+                    for i in range(4):
+                        for k in range(5):
+                            boss_attacks.append(Boss_Attack(1.5 - i, 5 - k, boss_attack_hitbox, boss_x, boss_y, img_boss_attack))
+                elif boss_attack_num == 1:
+                    boss_attack_num = 0
+                    for i in range(5):
+                        for k in range(4):
+                            boss_attacks.append(Boss_Attack(2 - i, 4 - k, boss_attack_hitbox, boss_x, boss_y, img_boss_attack))
 
             if event.type == BOSS_F_MONSTER_TIME and boss_level == 2:
                 monsters.append(Monster(monster_speed, monster_hp, level, monster_hitbox, monster_x, monster_y, img_monster_1))
@@ -542,14 +556,14 @@ while running:
                     s_speed_y = math.sin(angle_rad) * bullet_speed
 
                     boss_attacks.append(Boss_Attack(c_speed_x / 2, s_speed_y / 2, boss_attack_hitbox, boss_x, BOSS_Y, img_boss_attack))
-                    if boss_1_attack_num == 0:
+                    if boss_attack_num == 0:
                         boss_attacks.append(Boss_Attack(c_speed_x, s_speed_y, boss_attack_hitbox, boss_x - 150, BOSS_Y, img_boss_attack))
-                    elif boss_1_attack_num == 1:
+                    elif boss_attack_num == 1:
                         boss_attacks.append(Boss_Attack(c_speed_x, s_speed_y, boss_attack_hitbox, boss_x + 150, BOSS_Y, img_boss_attack))
-                if boss_1_attack_num == 0:
-                    boss_1_attack_num = 1
-                elif boss_1_attack_num == 1:
-                    boss_1_attack_num = 0
+                if boss_attack_num == 0:
+                    boss_attack_num = 1
+                elif boss_attack_num == 1:
+                    boss_attack_num = 0
                     boss_follow_attacks.append(Boss_Follow_Attack(3, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_boss_attack))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -566,7 +580,7 @@ while running:
                 if boss_speed_y <= 0:
                     boss_speed_y = 0
                     BOSS_Y = boss_y
-                    boss_1_attack_num = 0
+                    boss_attack_num = 0
                     boss_level = 1
 
             elif boss_level == 1:
@@ -576,10 +590,10 @@ while running:
                 screen.blit(img_boss_attack_mb, (boss_x - 48 - 225, BOSS_Y - 48 - 50))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 + 225, BOSS_Y - 48 - 50))
 
-                screen.blit(img_boss_attack_mb, (boss_x - 48, BOSS_Y - 48))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 - 150, BOSS_Y - 48))
                 screen.blit(img_boss_attack_mb, (boss_x - 48 + 150, BOSS_Y - 48))
                 if BOSS_HP * 3 // 4 >= boss_hp:
+                    boss_attack_num = 0
                     boss_level = 2
                     monster_x = 50
                     sp_rule = 0

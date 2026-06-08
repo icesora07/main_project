@@ -342,7 +342,7 @@ while running:
     if state == MAIN:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if ing == False:
-            screen.fill((20, 0, 10))
+            screen.fill((10, 0, 5))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -490,7 +490,7 @@ while running:
                 if level_check % 5 == 0:
                     level_check = 0
                     level += 1
-                if level >= 20:
+                if level >= 10:
                     boss_fight = True
                 for i in range(5):
                     monsters.append(Monster(monster_speed, monster_hp, level, monster_hitbox, monster_x, monster_y, img_monster_1))
@@ -550,7 +550,7 @@ while running:
                     boss_1_attack_num = 1
                 elif boss_1_attack_num == 1:
                     boss_1_attack_num = 0
-                    boss_follow_attacks.append(Boss_Follow_Attack(4, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_boss_attack))
+                    boss_follow_attacks.append(Boss_Follow_Attack(3, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_boss_attack))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         world_y, world_y_ = world_draw(player_x, world_y, world_y_, player_hitbox, 2 + monster_speed * (0.01 * level), mouse_x)
@@ -666,6 +666,9 @@ while running:
         if player_hp < 1:
             attacks = []
             s_items = []
+            monsters = []
+            boss_attacks = []
+            boss_follow_attacks = []
             ing = False
             level = 1
             time.sleep(1)
@@ -761,8 +764,8 @@ while running:
         # 임시 (보스 테스트 용도)
         if keys[pygame.K_n]:
             level += 1
-            if level > 20:
-                level = 20
+            if level > 10:
+                level = 10
 
         if keys[pygame.K_ESCAPE]:
             state = MAIN

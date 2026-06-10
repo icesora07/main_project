@@ -49,7 +49,6 @@ BOSS_F_4_ATTACK_TIME = pygame.USEREVENT + 7
 pygame.time.set_timer(BOSS_F_4_ATTACK_TIME, 1000)
 
 invincible = False
-boss_invincible = False
 boss_fight = False
 magnet = False
 
@@ -88,7 +87,7 @@ monster_y = -100
 monster_hitbox = 25
 monster_hp = 10
 
-level = 0
+level = 1
 level_check = 0
 
 world_y = -800
@@ -101,7 +100,7 @@ img_boss_attack_mb = pygame.image.load('boss_attack_mb.png')
 img_score_item = "score_item.png"
 img_e_score_item = "e_score_item.png"
 img_attack = 'attack.png'
-img_monster_1 = 'monday_bird.png'
+img_monster = 'monday_bird.png'
 img_boss_attack = "boss_attack.png"
 
 img_player = [
@@ -500,7 +499,7 @@ while running:
                 if level >= 10:
                     boss_fight = True
                 for i in range(5):
-                    monsters.append(Monster(monster_speed, monster_hp, level, monster_hitbox, monster_x, monster_y, img_monster_1))
+                    monsters.append(Monster(monster_speed, monster_hp, level, monster_hitbox, monster_x, monster_y, img_monster))
                     monster_x += 100
             if event.type == BOSS_F_1_ATTACK_TIME and boss_level == 1:
                 if boss_attack_num == 0:
@@ -529,7 +528,7 @@ while running:
                             boss_attacks.append(Boss_Attack(2 - i, 4 - k, boss_attack_hitbox, boss_x, boss_y, img_boss_attack))
 
             if event.type == BOSS_F_MONSTER_TIME and boss_level == 2:
-                monsters.append(Monster(monster_speed, monster_hp, level, monster_hitbox, monster_x, monster_y, img_monster_1))
+                monsters.append(Monster(monster_speed, monster_hp, level, monster_hitbox, monster_x, monster_y, img_monster))
                 monster_x, sp_rule = boss_fight_2(monster_x, sp_rule)
 
                 
@@ -667,7 +666,6 @@ while running:
             attack.move()
             attack.draw(screen)
 
-        color = (255, 255, 255)
         for monster in monsters:
             if crash(player_x, player_y, player_hitbox, monster.x, monster.y, monster.hitbox) == True and invincible == False:
                 player_hp -= 1

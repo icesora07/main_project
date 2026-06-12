@@ -102,6 +102,7 @@ img_e_score_item = "e_score_item.png"
 img_attack = 'attack.png'
 img_monster = 'monday_bird.png'
 img_boss_attack = "boss_attack.png"
+img_follow_boss_attack = "boss_follow_attack.png"
 
 img_player = [
     pygame.image.load('hoopt1.png'),
@@ -334,6 +335,21 @@ def boss_fight_2(monster_x, sp_rule):
         monster_x -= 100
     return monster_x, sp_rule
 
+# 매개 변수: x좌표, y좌표, x속력, y속력, 히트박스 크기, 바닥 충돌 횟수
+# 리턴 변수: x좌표, y좌표, 바닥 충돌 횟수
+# draw는 내부에서
+def spring_move(x, y, x_speed, y_speed, hitbox):
+    if x > WIDTH - hitbox:
+        x = WIDTH - hitbox
+        x_speed *= -1
+    elif x < hitbox:
+        x = hitbox
+        x_speed *= -1
+    if y > HEIGHT - hitbox:
+        y = HEIGHT - hitbox
+        y_speed *= -1
+    return x, y
+
 running = True
 while running:
     clock.tick(FPS)
@@ -513,7 +529,7 @@ while running:
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x, BOSS_Y, img_boss_attack))
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x - 150, BOSS_Y, img_boss_attack))
                     boss_attacks.append(Boss_Attack(0, 5, boss_attack_hitbox, boss_x + 150, BOSS_Y, img_boss_attack))
-                    boss_follow_attacks.append(Boss_Follow_Attack(2, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_boss_attack))
+                    boss_follow_attacks.append(Boss_Follow_Attack(2, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_follow_boss_attack))
             
             if event.type == BOSS_F_3_TIME and boss_level == 2:
                 if boss_attack_num == 0:
@@ -539,10 +555,10 @@ while running:
                 if boss_3_attack_num != 5:
                     if event.type == BOSS_F_3_ATTACK_TIME:
                         boss_3_attack_num += 1
-                        boss_follow_attacks.append(Boss_Follow_Attack(4, boss_attack_hitbox, boss_x - 150, BOSS_Y, player_x, player_y, img_boss_attack))
-                        boss_follow_attacks.append(Boss_Follow_Attack(4, boss_attack_hitbox, boss_x + 150, BOSS_Y, player_x, player_y, img_boss_attack))
-                        boss_follow_attacks.append(Boss_Follow_Attack(5, boss_attack_hitbox, boss_x - 50, BOSS_Y - 100, player_x, player_y, img_boss_attack))
-                        boss_follow_attacks.append(Boss_Follow_Attack(5, boss_attack_hitbox, boss_x + 50, BOSS_Y - 100, player_x, player_y, img_boss_attack))
+                        boss_follow_attacks.append(Boss_Follow_Attack(4, boss_attack_hitbox, boss_x - 150, BOSS_Y, player_x, player_y, img_follow_boss_attack))
+                        boss_follow_attacks.append(Boss_Follow_Attack(4, boss_attack_hitbox, boss_x + 150, BOSS_Y, player_x, player_y, img_follow_boss_attack))
+                        boss_follow_attacks.append(Boss_Follow_Attack(5, boss_attack_hitbox, boss_x - 50, BOSS_Y - 100, player_x, player_y, img_follow_boss_attack))
+                        boss_follow_attacks.append(Boss_Follow_Attack(5, boss_attack_hitbox, boss_x + 50, BOSS_Y - 100, player_x, player_y, img_follow_boss_attack))
                 else:
                     boss_3_attack = False
             if event.type == BOSS_F_4_ATTACK_TIME and boss_level == 4:
@@ -563,7 +579,7 @@ while running:
                     boss_attack_num = 1
                 elif boss_attack_num == 1:
                     boss_attack_num = 0
-                    boss_follow_attacks.append(Boss_Follow_Attack(3, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_boss_attack))
+                    boss_follow_attacks.append(Boss_Follow_Attack(3, boss_attack_hitbox, boss_x, boss_y, player_x, player_y, img_follow_boss_attack))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         world_y, world_y_ = world_draw(player_x, world_y, world_y_, player_hitbox, 2 + monster_speed * (0.01 * level), mouse_x)
